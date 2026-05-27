@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bf_background">#0F172A</color>
+    <color name="bf_card">#1E293B</color>
+    <color name="bf_card_alt">#243247</color>
+    <color name="bf_accent">#229ED9</color>
+    <color name="bf_text">#FFFFFF</color>
+    <color name="bf_text_secondary">#CBD5E1</color>
+    <color name="bf_error">#EF4444</color>
+    <color name="bf_success">#22C55E</color>
+    <color name="bf_warning">#F59E0B</color>
+    <color name="bf_divider">#334155</color>
+</resources>
