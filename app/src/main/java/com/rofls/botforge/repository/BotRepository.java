@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.rofls.botforge.models.Bot;
 import com.rofls.botforge.models.BotStatus;
+import com.rofls.botforge.storage.SecureTokenStorage;
 import com.rofls.botforge.utils.JsonUtils;
 
 import org.json.JSONArray;
@@ -21,16 +22,29 @@ public class BotRepository {
     private static final String KEY_BOTS = "bots";
 
     private final SharedPreferences prefs;
+    private final SecureTokenStorage tokenStorage;
 
     public BotRepository(Context context) {
-        prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        Context appContext = context.getApplicationContext();
+        prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        tokenStorage = new SecureTokenStorage(appContext);
     }
 
     public synchronized List<Bot> getAllBots() {
         JSONArray array = JsonUtils.safeArray(prefs.getString(KEY_BOTS, "[]"));
         List<Bot> bots = new ArrayList<>();
+        boolean migratedLegacyTokens = false;
         for (int i = 0; i < array.length(); i++) {
-            bots.add(Bot.fromJson(array.optJSONObject(i)));
+            Bot bot = Bot.fromJson(array.optJSONObject(i));
+            String legacyToken = bot.getToken();
+            String secureToken = tokenStorage.getToken(bot.getId());
+            if (!secureToken.isEmpty()) {
+                bot.setToken(secureToken);
+            } else if (legacyToken != null && !legacyToken.trim().isEmpty()) {
+                tokenStorage.saveToken(bot.getId(), legacyToken);
+                migratedLegacyTokens = true;
+            }
+            bots.add(bot);
         }
         Collections.sort(bots, new Comparator<Bot>() {
             @Override
@@ -38,6 +52,9 @@ public class BotRepository {
                 return Long.compare(right.getCreatedAt(), left.getCreatedAt());
             }
         });
+        if (migratedLegacyTokens) {
+            writeBots(bots);
+        }
         return bots;
     }
 
@@ -62,6 +79,9 @@ public class BotRepository {
         }
         if (bot.getCreatedAt() <= 0L) {
             bot.setCreatedAt(System.currentTimeMillis());
+        }
+        if (bot.getToken() != null && !bot.getToken().trim().isEmpty()) {
+            tokenStorage.saveToken(bot.getId(), bot.getToken());
         }
 
         List<Bot> bots = getAllBots();
@@ -88,6 +108,7 @@ public class BotRepository {
                 filtered.add(bot);
             }
         }
+        tokenStorage.deleteToken(botId);
         writeBots(filtered);
     }
 

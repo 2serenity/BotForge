@@ -26,7 +26,6 @@ public class Bot {
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("name", name);
-        json.put("token", token);
         json.put("username", username);
         json.put("status", status.name());
         json.put("mode", mode.name());

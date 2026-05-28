@@ -15,14 +15,16 @@ UI: XML layouts, no Jetpack Compose
 3. Run the `app` configuration on a device or emulator.
 4. Add a Telegram bot token from BotFather and press `Проверить токен`.
 
-This repository does not include a Gradle wrapper yet. Android Studio can still open and sync the project using its configured Gradle tooling.
+The repository includes a Gradle wrapper, so a local debug build can be started with `gradlew.bat assembleDebug` on Windows.
 
 ## What Works
 
 - Dark Telegram-like UI.
 - Add bot by name and token.
 - Validate token through real Telegram Bot API `getMe`.
-- Save bots locally with `SharedPreferences`.
+- Save bot metadata locally with `SharedPreferences`.
+- Store Telegram bot tokens in `EncryptedSharedPreferences`.
+- Exclude encrypted token storage from Android Auto Backup and device transfer.
 - Save scripts locally with `SharedPreferences`.
 - Show bots list.
 - Open bot card.
@@ -65,7 +67,8 @@ The Java side intentionally owns Telegram tokens, polling, offsets and message s
 ## Debug First
 
 1. Token validation in `AddBotActivity`.
-2. Telegram HTTP errors in `TelegramApiClient`.
-3. Polling loop and offset updates in `BotRunner`.
-4. Local persistence in `BotRepository`, `ScriptRepository`, `LogRepository`.
-5. Developer Mode bridge in `PythonBotEngine`.
+2. Secure token storage in `SecureTokenStorage`.
+3. Telegram HTTP errors in `TelegramApiClient`.
+4. Polling loop and offset updates in `BotRunner`.
+5. Local persistence in `BotRepository`, `ScriptRepository`, `LogRepository`.
+6. Developer Mode bridge in `PythonBotEngine`.
