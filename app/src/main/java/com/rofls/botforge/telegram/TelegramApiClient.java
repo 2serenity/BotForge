@@ -22,6 +22,7 @@ public class TelegramApiClient {
     private static final String API_BASE = "https://api.telegram.org/bot";
     private static final int CONNECT_TIMEOUT_MS = 15000;
     private static final int READ_TIMEOUT_MS = 35000;
+    public static final int MAX_MESSAGE_LENGTH = 4096;
 
     public String getMe(String token) throws IOException, TelegramApiException, JSONException {
         JSONObject response = request("GET", token, "getMe", "");
@@ -60,9 +61,38 @@ public class TelegramApiClient {
 
     public void sendMessage(String token, long chatId, String text, JSONArray buttons)
             throws IOException, TelegramApiException, JSONException {
+        List<String> chunks = splitMessageText(text);
+        for (int i = 0; i < chunks.size(); i++) {
+            JSONArray chunkButtons = i == chunks.size() - 1 ? buttons : null;
+            sendSingleMessage(token, chatId, chunks.get(i), chunkButtons);
+        }
+    }
+
+    public static List<String> splitMessageText(String text) {
+        String safeText = text == null ? "" : text;
+        List<String> chunks = new ArrayList<>();
+        if (safeText.length() <= MAX_MESSAGE_LENGTH) {
+            chunks.add(safeText);
+            return chunks;
+        }
+
+        int start = 0;
+        while (start < safeText.length()) {
+            int end = Math.min(start + MAX_MESSAGE_LENGTH, safeText.length());
+            if (end < safeText.length() && Character.isHighSurrogate(safeText.charAt(end - 1))) {
+                end--;
+            }
+            chunks.add(safeText.substring(start, end));
+            start = end;
+        }
+        return chunks;
+    }
+
+    private void sendSingleMessage(String token, long chatId, String text, JSONArray buttons)
+            throws IOException, TelegramApiException, JSONException {
         StringBuilder body = new StringBuilder();
         appendForm(body, "chat_id", String.valueOf(chatId));
-        appendForm(body, "text", text == null ? "" : text);
+        appendForm(body, "text", text);
         if (buttons != null && buttons.length() > 0) {
             JSONObject markup = new JSONObject();
             markup.put("keyboard", buttons);

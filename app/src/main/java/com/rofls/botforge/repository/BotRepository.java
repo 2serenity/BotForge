@@ -140,6 +140,15 @@ public class BotRepository {
         saveBot(bot);
     }
 
+    public synchronized void resetLastUpdateId(String botId) {
+        Bot bot = getBot(botId);
+        if (bot == null) {
+            return;
+        }
+        bot.setLastUpdateId(0L);
+        saveBot(bot);
+    }
+
     private void writeBots(List<Bot> bots) {
         JSONArray array = new JSONArray();
         for (Bot bot : bots) {

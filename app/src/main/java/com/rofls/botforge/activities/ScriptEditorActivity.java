@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ public class ScriptEditorActivity extends Activity {
 
     private TextView textEditorTitle;
     private EditText inputScript;
+    private String lastSavedScript = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class ScriptEditorActivity extends Activity {
         buttonEditorDocs.setOnClickListener(v -> openScriptApiDocs());
 
         loadBot();
+        setupUnsavedWatcher();
     }
 
     private void loadBot() {
@@ -65,16 +69,49 @@ public class ScriptEditorActivity extends Activity {
             return;
         }
         textEditorTitle.setText("Скрипт: " + bot.getName());
-        inputScript.setText(scriptRepository.getScript(bot.getScriptId()));
+        lastSavedScript = scriptRepository.getScript(bot.getScriptId());
+        inputScript.setText(lastSavedScript);
     }
 
     private void saveScript() {
         if (bot == null) {
             return;
         }
-        scriptRepository.saveScript(bot.getScriptId(), inputScript.getText().toString());
+        lastSavedScript = inputScript.getText().toString();
+        scriptRepository.saveScript(bot.getScriptId(), lastSavedScript);
         logRepository.info(bot, "Скрипт сохранён");
+        updateTitleDirtyState();
         UiUtils.toast(this, "Скрипт сохранён");
+    }
+
+    private void setupUnsavedWatcher() {
+        inputScript.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateTitleDirtyState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        updateTitleDirtyState();
+    }
+
+    private void updateTitleDirtyState() {
+        if (bot == null) {
+            return;
+        }
+        String suffix = hasUnsavedChanges() ? " *" : "";
+        textEditorTitle.setText("Скрипт: " + bot.getName() + suffix);
+    }
+
+    private boolean hasUnsavedChanges() {
+        return !inputScript.getText().toString().equals(lastSavedScript);
     }
 
     private void checkScript() {
@@ -139,12 +176,42 @@ public class ScriptEditorActivity extends Activity {
     }
 
     private void openLogs() {
-        Intent intent = new Intent(this, LogsActivity.class);
-        intent.putExtra("bot_id", botId);
-        startActivity(intent);
+        runAfterUnsavedCheck(() -> {
+            Intent intent = new Intent(this, LogsActivity.class);
+            intent.putExtra("bot_id", botId);
+            startActivity(intent);
+        });
     }
 
     private void openScriptApiDocs() {
-        startActivity(new Intent(this, ScriptApiDocsActivity.class));
+        runAfterUnsavedCheck(() -> startActivity(new Intent(this, ScriptApiDocsActivity.class)));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onBackPressed() {
+        runAfterUnsavedCheck(new Runnable() {
+            @Override
+            public void run() {
+                ScriptEditorActivity.super.onBackPressed();
+            }
+        });
+    }
+
+    private void runAfterUnsavedCheck(Runnable action) {
+        if (!hasUnsavedChanges()) {
+            action.run();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Скрипт не сохранён")
+                .setMessage("Сохранить изменения перед выходом?")
+                .setPositiveButton("Сохранить", (dialog, which) -> {
+                    saveScript();
+                    action.run();
+                })
+                .setNegativeButton("Не сохранять", (dialog, which) -> action.run())
+                .setNeutralButton("Отмена", null)
+                .show();
     }
 }

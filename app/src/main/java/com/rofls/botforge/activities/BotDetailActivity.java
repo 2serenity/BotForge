@@ -12,6 +12,7 @@ import com.rofls.botforge.models.Bot;
 import com.rofls.botforge.models.BotMode;
 import com.rofls.botforge.models.BotStatus;
 import com.rofls.botforge.models.BotTemplate;
+import com.rofls.botforge.models.LogEntry;
 import com.rofls.botforge.repository.BotRepository;
 import com.rofls.botforge.repository.LogRepository;
 import com.rofls.botforge.repository.ScriptRepository;
@@ -52,12 +53,14 @@ public class BotDetailActivity extends Activity {
         buttonStopBot = findViewById(R.id.buttonStopBot);
         Button buttonEditScript = findViewById(R.id.buttonEditScript);
         Button buttonBotLogs = findViewById(R.id.buttonBotLogs);
+        Button buttonResetOffset = findViewById(R.id.buttonResetOffset);
         Button buttonDeleteBot = findViewById(R.id.buttonDeleteBot);
 
         buttonStartBot.setOnClickListener(v -> startBotWithChecks());
         buttonStopBot.setOnClickListener(v -> stopBot());
         buttonEditScript.setOnClickListener(v -> openScriptEditor());
         buttonBotLogs.setOnClickListener(v -> openLogs());
+        buttonResetOffset.setOnClickListener(v -> confirmResetOffset());
         buttonDeleteBot.setOnClickListener(v -> confirmDelete());
     }
 
@@ -90,6 +93,12 @@ public class BotDetailActivity extends Activity {
                 + "\nСоздан: " + DateUtils.format(bot.getCreatedAt())
                 + "\nПоследний запуск: " + DateUtils.format(bot.getLastStartedAt())
                 + "\nLast update id: " + bot.getLastUpdateId();
+        if (bot.getStatus() == BotStatus.ERROR) {
+            String lastError = findLastErrorMessage();
+            if (!lastError.isEmpty()) {
+                info += "\nПоследняя ошибка: " + lastError;
+            }
+        }
         textBotInfo.setText(info);
 
         boolean running = runnerManager.isRunning(bot.getId());
@@ -151,6 +160,37 @@ public class BotDetailActivity extends Activity {
         Intent intent = new Intent(this, LogsActivity.class);
         intent.putExtra("bot_id", botId);
         startActivity(intent);
+    }
+
+    private String findLastErrorMessage() {
+        for (LogEntry entry : logRepository.getLogsForBot(botId)) {
+            if ("ERROR".equals(entry.getLevel())) {
+                String details = entry.getDetails() == null ? "" : entry.getDetails().trim();
+                return details.isEmpty() ? entry.getMessage() : entry.getMessage() + ": " + details;
+            }
+        }
+        return "";
+    }
+
+    private void confirmResetOffset() {
+        if (bot == null) {
+            return;
+        }
+        if (runnerManager.isRunning(bot.getId())) {
+            UiUtils.showError(this, "Сначала остановите polling, затем сбросьте offset.");
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Сбросить offset?")
+                .setMessage("BotForge забудет last update id. При следующем запуске Telegram может вернуть старые непрочитанные updates.")
+                .setPositiveButton("Сбросить", (dialog, which) -> {
+                    botRepository.resetLastUpdateId(bot.getId());
+                    logRepository.warn(bot, "Offset сброшен вручную", "");
+                    UiUtils.toast(this, "Offset сброшен");
+                    refreshBot();
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
     }
 
     private void confirmDelete() {

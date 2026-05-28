@@ -2,6 +2,8 @@ package com.rofls.botforge.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,12 +21,22 @@ import com.rofls.botforge.utils.UiUtils;
 import java.util.List;
 
 public class LogsActivity extends Activity {
+    private static final long AUTO_REFRESH_MS = 3000L;
+
     private String botId;
     private LogRepository logRepository;
     private BotRepository botRepository;
     private LinearLayout logsContainer;
     private TextView textLogsTitle;
     private TextView textLogsEmpty;
+    private Handler handler;
+    private final Runnable autoRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            renderLogs();
+            handler.postDelayed(this, AUTO_REFRESH_MS);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +46,12 @@ public class LogsActivity extends Activity {
         botId = getIntent().getStringExtra("bot_id");
         logRepository = new LogRepository(this);
         botRepository = new BotRepository(this);
+        handler = new Handler(Looper.getMainLooper());
         logsContainer = findViewById(R.id.logsContainer);
         textLogsTitle = findViewById(R.id.textLogsTitle);
         textLogsEmpty = findViewById(R.id.textLogsEmpty);
         Button buttonClearLogs = findViewById(R.id.buttonClearLogs);
+        Button buttonRefreshLogs = findViewById(R.id.buttonRefreshLogs);
 
         buttonClearLogs.setOnClickListener(v -> {
             if (botId == null || botId.isEmpty()) {
@@ -48,6 +62,7 @@ public class LogsActivity extends Activity {
             UiUtils.toast(this, "Логи очищены");
             renderLogs();
         });
+        buttonRefreshLogs.setOnClickListener(v -> renderLogs());
 
         renderLogs();
     }
@@ -56,6 +71,13 @@ public class LogsActivity extends Activity {
     protected void onResume() {
         super.onResume();
         renderLogs();
+        handler.postDelayed(autoRefreshRunnable, AUTO_REFRESH_MS);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(autoRefreshRunnable);
     }
 
     private void renderLogs() {

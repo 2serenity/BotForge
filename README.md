@@ -32,12 +32,19 @@ The repository includes a Gradle wrapper, so a local debug build can be started 
 - Fetch updates through real `getUpdates`.
 - Send replies through real `sendMessage`.
 - Store `lastUpdateId` and use it as polling offset.
+- Reset `lastUpdateId` manually from bot details.
+- Retry polling after temporary network failures with backoff.
+- Split Telegram replies longer than 4096 characters.
 - Prevent two simultaneous BotForge runners in this first version.
 - Write events and errors to local logs.
+- Refresh logs manually and auto-refresh while the screen is open.
 - Template engines for Echo, Command, Menu, FAQ and Buy/Sell.
 - Developer Mode script editor with basic validation.
+- Unsaved-change warning in the script editor.
 - Script API documentation in `docs/script-api.md` and inside the app.
 - Developer Mode Python execution through Chaquopy.
+- GitHub Actions workflow for unit tests and debug APK builds.
+- Manual Telegram test checklist in `docs/manual-test-checklist.md`.
 
 ## Important Limitation
 
@@ -57,3 +64,4 @@ The embedded runtime is implemented in `app/src/main/python/botforge_runtime.py`
 4. Polling loop and offset updates in `BotRunner`.
 5. Local persistence in `BotRepository`, `ScriptRepository`, `LogRepository`.
 6. Developer Mode bridge in `PythonBotEngine` and `botforge_runtime.py`.
+7. GitHub Actions build logs after each push.

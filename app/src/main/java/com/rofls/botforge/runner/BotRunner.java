@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BotRunner implements Runnable {
+    private static final int MAX_TRANSIENT_FAILURES = 6;
+    private static final long INITIAL_RETRY_DELAY_MS = 2000L;
+    private static final long MAX_RETRY_DELAY_MS = 60000L;
+
     private final Bot bot;
     private final TelegramApiClient apiClient;
     private final BotEngine engine;
@@ -69,10 +73,15 @@ public class BotRunner implements Runnable {
         logRepository.info(bot, "Polling запущен");
 
         long offset = bot.getLastUpdateId() > 0L ? bot.getLastUpdateId() + 1L : 0L;
+        int transientFailures = 0;
 
         while (running.get()) {
             try {
                 List<TelegramUpdate> updates = apiClient.getUpdates(bot.getToken(), offset);
+                if (transientFailures > 0) {
+                    logRepository.info(bot, "Polling восстановлен после сетевой ошибки");
+                    transientFailures = 0;
+                }
                 for (TelegramUpdate update : updates) {
                     if (!running.get()) {
                         break;
@@ -88,7 +97,10 @@ public class BotRunner implements Runnable {
                                     response.getText(),
                                     response.getButtons()
                             );
-                            logRepository.info(bot, "Ответ отправлен");
+                            logRepository.info(bot, "Ответ отправлен"
+                                    + (response.getText().length() > TelegramApiClient.MAX_MESSAGE_LENGTH
+                                    ? " несколькими сообщениями"
+                                    : ""));
                         }
                     }
 
@@ -98,12 +110,28 @@ public class BotRunner implements Runnable {
                         offset = update.getUpdateId() + 1L;
                     }
                 }
-            } catch (Exception ex) {
+            } catch (TelegramApiClient.TelegramApiException ex) {
                 if (running.get()) {
                     failed = true;
                     running.set(false);
                     botRepository.updateStatus(bot.getId(), BotStatus.ERROR);
-                    logRepository.error(bot, "Polling остановлен из-за ошибки", ex.getMessage());
+                    logRepository.error(bot, "Polling остановлен из-за ошибки Telegram API", ex.getMessage());
+                }
+            } catch (Exception ex) {
+                if (running.get()) {
+                    transientFailures++;
+                    if (transientFailures > MAX_TRANSIENT_FAILURES) {
+                        failed = true;
+                        running.set(false);
+                        botRepository.updateStatus(bot.getId(), BotStatus.ERROR);
+                        logRepository.error(bot, "Polling остановлен после повторных сетевых ошибок", ex.getMessage());
+                    } else {
+                        long delay = retryDelayMs(transientFailures);
+                        logRepository.warn(bot,
+                                "Временная ошибка polling, повтор через " + (delay / 1000L) + " сек.",
+                                ex.getMessage());
+                        sleepBeforeRetry(delay);
+                    }
                 }
             }
         }
@@ -113,5 +141,24 @@ public class BotRunner implements Runnable {
             logRepository.info(bot, "Polling остановлен");
         }
         running.set(false);
+    }
+
+    private long retryDelayMs(int failureCount) {
+        long delay = INITIAL_RETRY_DELAY_MS;
+        for (int i = 1; i < failureCount; i++) {
+            delay *= 2L;
+            if (delay >= MAX_RETRY_DELAY_MS) {
+                return MAX_RETRY_DELAY_MS;
+            }
+        }
+        return delay;
+    }
+
+    private void sleepBeforeRetry(long delayMs) {
+        try {
+            Thread.sleep(delayMs);
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
