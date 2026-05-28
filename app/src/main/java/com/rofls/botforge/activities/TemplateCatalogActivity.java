@@ -1,6 +1,7 @@
 package com.rofls.botforge.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,8 +23,16 @@ public class TemplateCatalogActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_template_catalog);
 
-        templateRepository = new TemplateRepository();
+        templateRepository = new TemplateRepository(this);
         templatesContainer = findViewById(R.id.templatesContainer);
+        Button buttonCreateTemplate = findViewById(R.id.buttonCreateTemplate);
+        buttonCreateTemplate.setOnClickListener(v -> createTemplate());
+        renderTemplates();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         renderTemplates();
     }
 
@@ -36,11 +45,17 @@ public class TemplateCatalogActivity extends Activity {
             TextView textDescription = card.findViewById(R.id.textTemplateDescription);
             TextView textDifficulty = card.findViewById(R.id.textTemplateDifficulty);
             Button buttonUse = card.findViewById(R.id.buttonUseTemplate);
+            LinearLayout customActions = card.findViewById(R.id.customTemplateActions);
+            Button buttonEdit = card.findViewById(R.id.buttonEditTemplate);
+            Button buttonDelete = card.findViewById(R.id.buttonDeleteTemplate);
 
-            textName.setText(template.getName());
+            textName.setText(template.getName() + (template.isBuiltIn() ? "" : " · мой"));
             textDescription.setText(template.getDescription());
             textDifficulty.setText("Сложность: " + template.getDifficulty());
             buttonUse.setOnClickListener(v -> useTemplate(template));
+            customActions.setVisibility(template.isBuiltIn() ? View.GONE : View.VISIBLE);
+            buttonEdit.setOnClickListener(v -> editTemplate(template));
+            buttonDelete.setOnClickListener(v -> confirmDeleteTemplate(template));
 
             templatesContainer.addView(card);
         }
@@ -51,5 +66,27 @@ public class TemplateCatalogActivity extends Activity {
         intent.putExtra("mode", "TEMPLATE");
         intent.putExtra("template_id", template.getId());
         startActivity(intent);
+    }
+
+    private void editTemplate(BotTemplate template) {
+        Intent intent = new Intent(this, TemplateEditorActivity.class);
+        intent.putExtra("template_id", template.getId());
+        startActivity(intent);
+    }
+
+    private void createTemplate() {
+        startActivity(new Intent(this, TemplateEditorActivity.class));
+    }
+
+    private void confirmDeleteTemplate(BotTemplate template) {
+        new AlertDialog.Builder(this)
+                .setTitle("Удалить шаблон?")
+                .setMessage("Уже созданные боты не изменятся: у них есть собственные копии скрипта.")
+                .setPositiveButton("Удалить", (dialog, which) -> {
+                    templateRepository.deleteCustomTemplate(template.getId());
+                    renderTemplates();
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
     }
 }

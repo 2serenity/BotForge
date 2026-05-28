@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textTemplateEditorTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пользовательский шаблон"
+            android:textColor="@color/bf_text"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Название"
+            android:textColor="@color/bf_text_secondary"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/inputTemplateName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_text"
+            android:hint="Например: My Shop Bot"
+            android:singleLine="true"
+            android:textColor="@color/bf_text"
+            android:textColorHint="@color/bf_text_secondary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Описание"
+            android:textColor="@color/bf_text_secondary"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/inputTemplateDescription"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_text"
+            android:gravity="top|start"
+            android:hint="Коротко опишите назначение шаблона"
+            android:inputType="textMultiLine"
+            android:textColor="@color/bf_text"
+            android:textColorHint="@color/bf_text_secondary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Сложность"
+            android:textColor="@color/bf_text_secondary"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/inputTemplateDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_text"
+            android:hint="Лёгкий / Средний / Сложный"
+            android:singleLine="true"
+            android:textColor="@color/bf_text"
+            android:textColorHint="@color/bf_text_secondary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Python-код шаблона"
+            android:textColor="@color/bf_text_secondary"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/inputTemplateScript"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_text"
+            android:fontFamily="monospace"
+            android:gravity="top|start"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:scrollbars="vertical"
+            android:textColor="@color/bf_text"
+            android:textColorHint="@color/bf_text_secondary"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/buttonSaveTemplate"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_button_primary"
+            android:text="Сохранить шаблон"
+            android:textAllCaps="false"
+            android:textColor="@color/bf_text" />
+
+    </LinearLayout>
+</ScrollView>

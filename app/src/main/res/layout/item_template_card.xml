@@ -43,4 +43,34 @@
         android:textAllCaps="false"
         android:textColor="@color/bf_text" />
 
+    <LinearLayout
+        android:id="@+id/customTemplateActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/buttonEditTemplate"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_button_secondary"
+            android:text="Редактировать"
+            android:textAllCaps="false"
+            android:textColor="@color/bf_text" />
+
+        <Button
+            android:id="@+id/buttonDeleteTemplate"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_button_danger"
+            android:text="Удалить"
+            android:textAllCaps="false"
+            android:textColor="@color/bf_text" />
+    </LinearLayout>
+
 </LinearLayout>

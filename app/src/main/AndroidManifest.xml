@@ -17,6 +17,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".activities.TemplateEditorActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".activities.SettingsActivity"
             android:exported="false" />
 

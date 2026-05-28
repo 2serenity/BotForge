@@ -50,6 +50,7 @@ public class ScriptEditorActivity extends Activity {
         Button buttonEditorStop = findViewById(R.id.buttonEditorStop);
         Button buttonEditorLogs = findViewById(R.id.buttonEditorLogs);
         Button buttonEditorDocs = findViewById(R.id.buttonEditorDocs);
+        Button buttonSaveAsTemplate = findViewById(R.id.buttonSaveAsTemplate);
 
         buttonSaveScript.setOnClickListener(v -> saveScript());
         buttonCheckScript.setOnClickListener(v -> checkScript());
@@ -57,6 +58,7 @@ public class ScriptEditorActivity extends Activity {
         buttonEditorStop.setOnClickListener(v -> stopBot());
         buttonEditorLogs.setOnClickListener(v -> openLogs());
         buttonEditorDocs.setOnClickListener(v -> openScriptApiDocs());
+        buttonSaveAsTemplate.setOnClickListener(v -> saveAsTemplate());
 
         loadBot();
         setupUnsavedWatcher();
@@ -185,6 +187,23 @@ public class ScriptEditorActivity extends Activity {
 
     private void openScriptApiDocs() {
         runAfterUnsavedCheck(() -> startActivity(new Intent(this, ScriptApiDocsActivity.class)));
+    }
+
+    private void saveAsTemplate() {
+        if (bot == null) {
+            return;
+        }
+        String script = inputScript.getText().toString();
+        if (!isBasicScriptValid(script)) {
+            UiUtils.showError(this, "Сначала подготовьте валидный скрипт для шаблона.");
+            return;
+        }
+
+        Intent intent = new Intent(this, TemplateEditorActivity.class);
+        intent.putExtra("source_name", bot.getName() + " Template");
+        intent.putExtra("source_description", "Пользовательский шаблон из скрипта " + bot.getName());
+        intent.putExtra("source_script", script);
+        startActivity(intent);
     }
 
     @Override

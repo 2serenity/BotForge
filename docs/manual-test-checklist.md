@@ -34,6 +34,21 @@ Use this checklist on a real device or emulator with a test Telegram bot token f
 - FAQ Bot: send messages containing `цена`, `время`, `контакты`, and unknown text.
 - Buy/Sell Bot: add an item through `Продать`, then view it through `Купить`.
 
+## Custom Templates
+
+- Create a DEVELOPER bot.
+- Write and save a working script.
+- Press `Сохранить как шаблон`.
+- Fill template name, description and difficulty.
+- Save the custom template.
+- Open template catalog.
+- Confirm the custom template is marked as `мой`.
+- Edit the custom template and save changes.
+- Use the custom template to create a new bot.
+- Confirm the new bot receives a copied script and runs through Python engine.
+- Delete the custom template.
+- Confirm already-created bots from this template still keep their script copy.
+
 ## Developer Mode
 
 - Create a DEVELOPER bot.

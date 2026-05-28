@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.rofls.botforge.R;
 import com.rofls.botforge.models.Bot;
 import com.rofls.botforge.models.BotStatus;
+import com.rofls.botforge.models.BotTemplate;
 import com.rofls.botforge.repository.BotRepository;
 import com.rofls.botforge.repository.TemplateRepository;
 import com.rofls.botforge.runner.BotRunnerManager;
@@ -64,9 +65,14 @@ public class BotsListActivity extends Activity {
             TextView textBotMeta = card.findViewById(R.id.textBotMeta);
             TextView textBotStatus = card.findViewById(R.id.textBotStatus);
 
-            String templateName = bot.getTemplateId() == null || bot.getTemplateId().isEmpty()
-                    ? "Developer Mode"
-                    : new TemplateRepository().getTemplate(bot.getTemplateId()).getName();
+            BotTemplate template = bot.getTemplateId() == null || bot.getTemplateId().isEmpty()
+                    ? null
+                    : new TemplateRepository(this).findTemplate(bot.getTemplateId());
+            String templateName = template == null
+                    ? (TemplateRepository.isCustomTemplateId(bot.getTemplateId())
+                    ? "Пользовательский шаблон (удалён)"
+                    : "Developer Mode")
+                    : template.getName();
 
             textBotName.setText(bot.getName());
             textBotMeta.setText("@" + bot.getUsername() + " · " + bot.getMode().name() + " · " + templateName);

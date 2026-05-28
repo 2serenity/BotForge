@@ -44,7 +44,7 @@ public class BotDetailActivity extends Activity {
         botRepository = new BotRepository(this);
         scriptRepository = new ScriptRepository(this);
         logRepository = new LogRepository(this);
-        templateRepository = new TemplateRepository();
+        templateRepository = new TemplateRepository(this);
         runnerManager = BotRunnerManager.getInstance(this);
 
         textBotTitle = findViewById(R.id.textBotTitle);
@@ -84,8 +84,12 @@ public class BotDetailActivity extends Activity {
         }
 
         textBotTitle.setText(bot.getName());
-        BotTemplate template = templateRepository.getTemplate(bot.getTemplateId());
-        String templateText = bot.getMode() == BotMode.TEMPLATE ? template.getName() : "Developer Mode";
+        BotTemplate template = templateRepository.findTemplate(bot.getTemplateId());
+        String templateText = template == null
+                ? (TemplateRepository.isCustomTemplateId(bot.getTemplateId())
+                ? "Пользовательский шаблон (удалён)"
+                : "Developer Mode")
+                : template.getName();
         String info = "Username: @" + bot.getUsername()
                 + "\nСтатус: " + bot.getStatus().name()
                 + "\nРежим: " + bot.getMode().name()

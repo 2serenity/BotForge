@@ -39,6 +39,7 @@ The repository includes a Gradle wrapper, so a local debug build can be started 
 - Write events and errors to local logs.
 - Refresh logs manually and auto-refresh while the screen is open.
 - Template engines for Echo, Command, Menu, FAQ and Buy/Sell.
+- Custom templates: save Developer Mode scripts as reusable editable templates.
 - Developer Mode script editor with basic validation.
 - Unsaved-change warning in the script editor.
 - Script API documentation in `docs/script-api.md` and inside the app.

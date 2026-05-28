@@ -11,6 +11,7 @@ import com.rofls.botforge.models.BotStatus;
 import com.rofls.botforge.repository.BotRepository;
 import com.rofls.botforge.repository.LogRepository;
 import com.rofls.botforge.repository.ScriptRepository;
+import com.rofls.botforge.repository.TemplateRepository;
 import com.rofls.botforge.telegram.TelegramApiClient;
 
 public class BotRunnerManager {
@@ -48,7 +49,10 @@ public class BotRunnerManager {
             throw new IllegalStateException("В первой версии BotForge одновременно запускается один бот.");
         }
 
-        BotEngine engine = bot.getMode() == BotMode.DEVELOPER
+        boolean usesPython = bot.getMode() == BotMode.DEVELOPER
+                || TemplateRepository.isCustomTemplateId(bot.getTemplateId());
+
+        BotEngine engine = usesPython
                 ? new PythonBotEngine(appContext, scriptRepository, logRepository)
                 : new TemplateBotEngine(appContext);
 

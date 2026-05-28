@@ -58,7 +58,7 @@ public class AddBotActivity extends Activity {
         botRepository = new BotRepository(this);
         scriptRepository = new ScriptRepository(this);
         logRepository = new LogRepository(this);
-        templateRepository = new TemplateRepository();
+        templateRepository = new TemplateRepository(this);
         telegramApiClient = new TelegramApiClient();
         executorService = Executors.newSingleThreadExecutor();
 
