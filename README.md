@@ -36,6 +36,7 @@ The repository includes a Gradle wrapper, so a local debug build can be started 
 - Write events and errors to local logs.
 - Template engines for Echo, Command, Menu, FAQ and Buy/Sell.
 - Developer Mode script editor with basic validation.
+- Script API documentation in `docs/script-api.md` and inside the app.
 
 ## Important Limitation
 

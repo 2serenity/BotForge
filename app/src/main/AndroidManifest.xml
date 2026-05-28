@@ -13,6 +13,10 @@
         android:theme="@style/Theme.BotForge">
 
         <activity
+            android:name=".activities.ScriptApiDocsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activities.SettingsActivity"
             android:exported="false" />
 

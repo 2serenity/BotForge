@@ -46,12 +46,14 @@ public class ScriptEditorActivity extends Activity {
         Button buttonEditorStart = findViewById(R.id.buttonEditorStart);
         Button buttonEditorStop = findViewById(R.id.buttonEditorStop);
         Button buttonEditorLogs = findViewById(R.id.buttonEditorLogs);
+        Button buttonEditorDocs = findViewById(R.id.buttonEditorDocs);
 
         buttonSaveScript.setOnClickListener(v -> saveScript());
         buttonCheckScript.setOnClickListener(v -> checkScript());
         buttonEditorStart.setOnClickListener(v -> startBotFromEditor());
         buttonEditorStop.setOnClickListener(v -> stopBot());
         buttonEditorLogs.setOnClickListener(v -> openLogs());
+        buttonEditorDocs.setOnClickListener(v -> openScriptApiDocs());
 
         loadBot();
     }
@@ -140,5 +142,9 @@ public class ScriptEditorActivity extends Activity {
         Intent intent = new Intent(this, LogsActivity.class);
         intent.putExtra("bot_id", botId);
         startActivity(intent);
+    }
+
+    private void openScriptApiDocs() {
+        startActivity(new Intent(this, ScriptApiDocsActivity.class));
     }
 }
