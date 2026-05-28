@@ -101,7 +101,7 @@ public class LogsActivity extends Activity {
             TextView details = card.findViewById(R.id.textLogDetails);
 
             header.setText(DateUtils.format(entry.getTimestamp())
-                    + " · " + entry.getLevel()
+                    + " · " + levelText(entry.getLevel())
                     + " · " + entry.getBotName());
             header.setTextColor(colorForLevel(entry.getLevel()));
             message.setText(entry.getMessage());
@@ -123,5 +123,15 @@ public class LogsActivity extends Activity {
             return getColor(R.color.bf_warning);
         }
         return getColor(R.color.bf_text_secondary);
+    }
+
+    private String levelText(String level) {
+        if ("ERROR".equals(level)) {
+            return "ОШИБКА";
+        }
+        if ("WARN".equals(level)) {
+            return "ПРЕДУПРЕЖДЕНИЕ";
+        }
+        return "ИНФО";
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.rofls.botforge.R;
 import com.rofls.botforge.models.Bot;
+import com.rofls.botforge.models.BotMode;
 import com.rofls.botforge.models.BotStatus;
 import com.rofls.botforge.models.BotTemplate;
 import com.rofls.botforge.repository.BotRepository;
@@ -71,11 +72,11 @@ public class BotsListActivity extends Activity {
             String templateName = template == null
                     ? (TemplateRepository.isCustomTemplateId(bot.getTemplateId())
                     ? "Пользовательский шаблон (удалён)"
-                    : "Developer Mode")
+                    : "Режим разработчика")
                     : template.getName();
 
             textBotName.setText(bot.getName());
-            textBotMeta.setText("@" + bot.getUsername() + " · " + bot.getMode().name() + " · " + templateName);
+            textBotMeta.setText("@" + bot.getUsername() + " · " + modeText(bot.getMode()) + " · " + templateName);
             textBotStatus.setText(statusText(bot.getStatus()));
             textBotStatus.setTextColor(statusColor(bot.getStatus()));
 
@@ -104,12 +105,19 @@ public class BotsListActivity extends Activity {
 
     private String statusText(BotStatus status) {
         if (status == BotStatus.RUNNING) {
-            return "RUNNING";
+            return "Запущен";
         }
         if (status == BotStatus.ERROR) {
-            return "ERROR";
+            return "Ошибка";
         }
-        return "STOPPED";
+        return "Остановлен";
+    }
+
+    private String modeText(BotMode mode) {
+        if (mode == BotMode.DEVELOPER) {
+            return "Разработчик";
+        }
+        return "Шаблон";
     }
 
     private int statusColor(BotStatus status) {

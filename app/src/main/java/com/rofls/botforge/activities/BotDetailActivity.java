@@ -88,15 +88,15 @@ public class BotDetailActivity extends Activity {
         String templateText = template == null
                 ? (TemplateRepository.isCustomTemplateId(bot.getTemplateId())
                 ? "Пользовательский шаблон (удалён)"
-                : "Developer Mode")
+                : "Режим разработчика")
                 : template.getName();
-        String info = "Username: @" + bot.getUsername()
-                + "\nСтатус: " + bot.getStatus().name()
-                + "\nРежим: " + bot.getMode().name()
+        String info = "Юзернейм Telegram: @" + bot.getUsername()
+                + "\nСтатус: " + statusText(bot.getStatus())
+                + "\nРежим: " + modeText(bot.getMode())
                 + "\nШаблон: " + templateText
                 + "\nСоздан: " + DateUtils.format(bot.getCreatedAt())
                 + "\nПоследний запуск: " + DateUtils.format(bot.getLastStartedAt())
-                + "\nLast update id: " + bot.getLastUpdateId();
+                + "\nПоследний ID обновления: " + bot.getLastUpdateId();
         if (bot.getStatus() == BotStatus.ERROR) {
             String lastError = findLastErrorMessage();
             if (!lastError.isEmpty()) {
@@ -128,7 +128,7 @@ public class BotDetailActivity extends Activity {
 
     private void showDeveloperWarningThenStart() {
         new AlertDialog.Builder(this)
-                .setTitle("Developer Mode")
+                .setTitle("Режим разработчика")
                 .setMessage("Вы запускаете пользовательский Python-код локально на своём устройстве. Код может содержать ошибки, зависать, потреблять ресурсы устройства и нарушать работу бота. Вы несёте ответственность за скрипт, который запускаете.")
                 .setPositiveButton("Запустить", (dialog, which) -> runStart())
                 .setNegativeButton("Отмена", null)
@@ -138,7 +138,7 @@ public class BotDetailActivity extends Activity {
     private void runStart() {
         try {
             runnerManager.startBot(bot);
-            UiUtils.toast(this, "Polling запущен");
+            UiUtils.toast(this, "Опрос запущен");
             refreshBot();
         } catch (IllegalStateException ex) {
             UiUtils.showError(this, ex.getMessage());
@@ -150,7 +150,7 @@ public class BotDetailActivity extends Activity {
             return;
         }
         runnerManager.stopBot(bot.getId());
-        UiUtils.toast(this, "Polling остановлен");
+        UiUtils.toast(this, "Опрос остановлен");
         refreshBot();
     }
 
@@ -181,16 +181,16 @@ public class BotDetailActivity extends Activity {
             return;
         }
         if (runnerManager.isRunning(bot.getId())) {
-            UiUtils.showError(this, "Сначала остановите polling, затем сбросьте offset.");
+            UiUtils.showError(this, "Сначала остановите опрос, затем сбросьте ID обновления.");
             return;
         }
         new AlertDialog.Builder(this)
-                .setTitle("Сбросить offset?")
-                .setMessage("BotForge забудет last update id. При следующем запуске Telegram может вернуть старые непрочитанные updates.")
+                .setTitle("Сбросить ID обновления?")
+                .setMessage("BotForge забудет последний ID обновления. При следующем запуске Telegram может вернуть старые непрочитанные обновления.")
                 .setPositiveButton("Сбросить", (dialog, which) -> {
                     botRepository.resetLastUpdateId(bot.getId());
-                    logRepository.warn(bot, "Offset сброшен вручную", "");
-                    UiUtils.toast(this, "Offset сброшен");
+                    logRepository.warn(bot, "ID обновления сброшен вручную", "");
+                    UiUtils.toast(this, "ID обновления сброшен");
                     refreshBot();
                 })
                 .setNegativeButton("Отмена", null)
@@ -213,5 +213,22 @@ public class BotDetailActivity extends Activity {
                 })
                 .setNegativeButton("Отмена", null)
                 .show();
+    }
+
+    private String statusText(BotStatus status) {
+        if (status == BotStatus.RUNNING) {
+            return "Запущен";
+        }
+        if (status == BotStatus.ERROR) {
+            return "Ошибка";
+        }
+        return "Остановлен";
+    }
+
+    private String modeText(BotMode mode) {
+        if (mode == BotMode.DEVELOPER) {
+            return "Разработчик";
+        }
+        return "Шаблон";
     }
 }

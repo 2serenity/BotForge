@@ -1,12 +1,12 @@
-# BotForge Script API
+# API скриптов BotForge
 
-Status: first executable API for Developer Mode.
+Статус: первая исполняемая версия API для режима разработчика.
 
-Python scripts are executed locally through Chaquopy. The API is intentionally small and can be expanded after the runner is stable.
+Python-скрипты выполняются локально через Chaquopy. API намеренно небольшой: его можно расширять после стабилизации раннера.
 
-Important rule: Python code must never receive the Telegram bot token. Android owns token storage, polling, offset handling and calls to Telegram Bot API.
+Главное правило: Python-код не получает Telegram-токен. Android отвечает за хранение токена, опрос, offset и вызовы Telegram Bot API.
 
-## Minimal Bot
+## Минимальный бот
 
 ```python
 from botforge import bot
@@ -16,97 +16,97 @@ def echo(ctx):
     ctx.reply(ctx.text)
 ```
 
-## Decorators
+## Декораторы
 
 ### `@bot.message()`
 
-Handles any text message that was not matched by a more specific handler.
+Обрабатывает любое текстовое сообщение, если не найден более точный обработчик.
 
 ```python
 @bot.message()
 def any_message(ctx):
-    ctx.reply("I received: " + ctx.text)
+    ctx.reply("Я получил: " + ctx.text)
 ```
 
 ### `@bot.command("/start")`
 
-Handles a Telegram command. Command matching should be exact and case-sensitive.
+Обрабатывает Telegram-команду. Сравнение команды точное и зависит от регистра.
 
 ```python
 @bot.command("/start")
 def start(ctx):
-    ctx.reply("Hello from BotForge")
+    ctx.reply("Привет из BotForge")
 ```
 
-### `@bot.button("Catalog")`
+### `@bot.button("Каталог")`
 
-Handles a button press. In the first bridge version this can be implemented as text matching against `ctx.text`.
+Обрабатывает нажатие кнопки. В первой версии связки Java/Python это работает как сравнение текста кнопки с `ctx.text`.
 
 ```python
-@bot.button("Catalog")
+@bot.button("Каталог")
 def catalog(ctx):
-    ctx.reply("Catalog is empty.", buttons=[
-        ["Back"]
+    ctx.reply("Каталог пуст.", buttons=[
+        ["Назад"]
     ])
 ```
 
 ### `@bot.state("state_name")`
 
-Handles a message when the current chat is in the given state.
+Обрабатывает сообщение, когда текущий чат находится в указанном состоянии.
 
 ```python
 @bot.state("add_title")
 def add_title(ctx):
     ctx.session["title"] = ctx.text
     ctx.set_state("add_price")
-    ctx.reply("Now send the price")
+    ctx.reply("Теперь напишите цену")
 ```
 
-## Context
+## Контекст
 
-Every handler receives `ctx`.
+Каждый обработчик получает `ctx`.
 
-Planned fields:
+Доступные поля:
 
-- `ctx.text`: incoming message text.
+- `ctx.text`: текст входящего сообщения.
 - `ctx.chat_id`: Telegram chat id.
 - `ctx.user_id`: Telegram user id.
-- `ctx.username`: Telegram username, if present.
-- `ctx.first_name`: Telegram first name, if present.
+- `ctx.username`: Telegram username, если он есть.
+- `ctx.first_name`: имя пользователя Telegram, если оно есть.
 - `ctx.message_id`: Telegram message id.
-- `ctx.session`: per-bot, per-chat mutable dictionary.
-- `ctx.storage`: simple per-bot storage object.
+- `ctx.session`: изменяемый словарь для пары бот-чат.
+- `ctx.storage`: простое локальное хранилище для бота.
 
-Planned methods:
+Доступные методы:
 
 - `ctx.reply(text)`
-- `ctx.reply(text, buttons=[["A"], ["B"]])`
+- `ctx.reply(text, buttons=[["Да"], ["Нет"]])`
 - `ctx.set_state("state_name")`
 - `ctx.clear_state()`
 - `ctx.get_state()`
 
-## Buttons
+## Кнопки
 
-Buttons are represented as a two-dimensional list. Each nested list is one keyboard row.
+Кнопки описываются двумерным списком. Каждый вложенный список — отдельная строка клавиатуры.
 
 ```python
-ctx.reply("Main menu", buttons=[
-    ["Catalog"],
-    ["Help", "Back"]
+ctx.reply("Главное меню", buttons=[
+    ["Каталог"],
+    ["Помощь", "Назад"]
 ])
 ```
 
-Android should convert this to Telegram `reply_markup.keyboard`.
+Android преобразует это в Telegram `reply_markup.keyboard`.
 
-## Storage
+## Хранилище
 
-Storage is local to the Android app. It is not a cloud database.
+Хранилище локальное для Android-приложения. Это не облачная база данных.
 
-Planned API:
+Доступный API:
 
 ```python
 ctx.storage.add("items", {
-    "title": "Phone",
+    "title": "Телефон",
     "price": "10000",
     "seller_id": ctx.user_id
 })
@@ -115,21 +115,21 @@ items = ctx.storage.all("items")
 ctx.storage.clear("items")
 ```
 
-## Session and State
+## Сессия и состояние
 
-`ctx.session` is intended for temporary per-chat data. `state` controls multi-step dialogs.
+`ctx.session` нужен для временных данных конкретного чата. `state` управляет многошаговыми диалогами.
 
 ```python
-@bot.button("Sell")
+@bot.button("Продать")
 def sell(ctx):
     ctx.set_state("add_title")
-    ctx.reply("Send item title")
+    ctx.reply("Напишите название товара")
 
 @bot.state("add_title")
 def add_title(ctx):
     ctx.session["title"] = ctx.text
     ctx.set_state("add_price")
-    ctx.reply("Send price")
+    ctx.reply("Напишите цену")
 
 @bot.state("add_price")
 def add_price(ctx):
@@ -139,35 +139,35 @@ def add_price(ctx):
         "seller_id": ctx.user_id
     })
     ctx.clear_state()
-    ctx.reply("Item added")
+    ctx.reply("Товар добавлен")
 ```
 
-## Handler Priority
+## Приоритет обработчиков
 
-Recommended order for the real bridge:
+Рекомендуемый порядок выбора обработчика:
 
-1. Current `@bot.state(...)` handler.
-2. Exact `@bot.command(...)`.
-3. Exact `@bot.button(...)`.
-4. Fallback `@bot.message()`.
+1. Текущий обработчик `@bot.state(...)`.
+2. Точное совпадение `@bot.command(...)`.
+3. Точное совпадение `@bot.button(...)`.
+4. Запасной обработчик `@bot.message()`.
 
-## Runtime Limits
+## Ограничения выполнения
 
-BotForge is a local mobile runner, not a VPS.
+BotForge — локальный мобильный раннер, а не VPS.
 
-- Android can stop background work.
-- Network can be restricted.
-- Battery optimization can interrupt polling.
-- Long-running Python handlers should be avoided.
-- Scripts should not block the polling thread.
+- Android может остановить фоновую работу.
+- Сеть может быть ограничена.
+- Экономия батареи может прервать опрос Telegram.
+- Долгие Python-обработчики лучше не использовать.
+- Скрипты не должны блокировать поток опроса.
 
-## Current Implementation
+## Текущая реализация
 
-Current Android code:
+Android-код сейчас:
 
-- saves scripts in `ScriptRepository`;
-- validates scripts with a basic text check;
-- executes scripts through `PythonBotEngine` and Chaquopy;
-- exposes `ctx`, decorators, reply buttons, state, session and simple storage.
+- сохраняет скрипты в `ScriptRepository`;
+- проверяет скрипты простой текстовой проверкой;
+- выполняет скрипты через `PythonBotEngine` и Chaquopy;
+- предоставляет `ctx`, декораторы, кнопки ответа, состояние, сессию и простое хранилище.
 
-Telegram polling, offset handling, token storage and `sendMessage` remain in Java.
+Опрос Telegram, offset, хранение токена и `sendMessage` остаются в Java.

@@ -1,68 +1,68 @@
 # BotForge
 
-BotForge is a first working Android skeleton for a local Telegram bot runner.
+BotForge — первая рабочая Android-сборка локального раннера Telegram-ботов.
 
-Package: `com.rofls.botforge`
+Пакет: `com.rofls.botforge`
 
-Language: Java
+Основной язык: Java
 
-UI: XML layouts, no Jetpack Compose
+Интерфейс: XML-разметка, без Jetpack Compose
 
-## How to Open
+## Как открыть
 
-1. Open this folder in Android Studio.
-2. Let Android Studio sync Gradle.
-3. Run the `app` configuration on a device or emulator.
-4. Add a Telegram bot token from BotFather and press `Проверить токен`.
+1. Откройте эту папку в Android Studio.
+2. Дождитесь синхронизации Gradle.
+3. Запустите конфигурацию `app` на устройстве или эмуляторе.
+4. Добавьте токен Telegram-бота из BotFather и нажмите `Проверить токен`.
 
-The repository includes a Gradle wrapper, so a local debug build can be started with `gradlew.bat assembleDebug` on Windows.
+В репозитории есть Gradle Wrapper, поэтому локальную debug-сборку на Windows можно запустить командой `gradlew.bat assembleDebug`.
 
-## What Works
+## Что уже работает
 
-- Dark Telegram-like UI.
-- Add bot by name and token.
-- Validate token through real Telegram Bot API `getMe`.
-- Save bot metadata locally with `SharedPreferences`.
-- Store Telegram bot tokens in `EncryptedSharedPreferences`.
-- Exclude encrypted token storage from Android Auto Backup and device transfer.
-- Save scripts locally with `SharedPreferences`.
-- Show bots list.
-- Open bot card.
-- Start/stop long polling in a background thread.
-- Fetch updates through real `getUpdates`.
-- Send replies through real `sendMessage`.
-- Store `lastUpdateId` and use it as polling offset.
-- Reset `lastUpdateId` manually from bot details.
-- Retry polling after temporary network failures with backoff.
-- Split Telegram replies longer than 4096 characters.
-- Prevent two simultaneous BotForge runners in this first version.
-- Write events and errors to local logs.
-- Refresh logs manually and auto-refresh while the screen is open.
-- Template engines for Echo, Command, Menu, FAQ and Buy/Sell.
-- Custom templates: save Developer Mode scripts as reusable editable templates.
-- Developer Mode script editor with basic validation.
-- Unsaved-change warning in the script editor.
-- Script API documentation in `docs/script-api.md` and inside the app.
-- Developer Mode Python execution through Chaquopy.
-- GitHub Actions workflow for unit tests and debug APK builds.
-- Manual Telegram test checklist in `docs/manual-test-checklist.md`.
+- Тёмный интерфейс в стиле Telegram.
+- Добавление бота по названию и токену.
+- Проверка токена через реальный Telegram Bot API `getMe`.
+- Локальное хранение метаданных ботов в `SharedPreferences`.
+- Хранение Telegram-токенов в `EncryptedSharedPreferences`.
+- Исключение зашифрованного хранилища токенов из автобэкапа Android и переноса между устройствами.
+- Локальное хранение скриптов в `SharedPreferences`.
+- Список добавленных ботов.
+- Карточка конкретного бота.
+- Запуск и остановка фонового опроса Telegram через long polling.
+- Получение обновлений через реальный `getUpdates`.
+- Отправка ответов через реальный `sendMessage`.
+- Хранение `lastUpdateId` и использование его как offset для опроса.
+- Ручной сброс `lastUpdateId` из карточки бота.
+- Повтор опроса после временных сетевых ошибок с задержкой.
+- Разбиение Telegram-ответов длиннее 4096 символов.
+- Защита от запуска двух BotForge-раннеров одновременно в первой версии.
+- Запись событий и ошибок в локальный журнал.
+- Ручное обновление журнала и автообновление, пока экран открыт.
+- Шаблонные движки для эхо-бота, командного бота, меню-бота, FAQ-бота и бота купли-продажи.
+- Пользовательские шаблоны: скрипт из режима разработчика можно сохранить как переиспользуемый и редактируемый шаблон.
+- Редактор скриптов режима разработчика с базовой проверкой.
+- Предупреждение о несохранённых изменениях в редакторе скрипта.
+- Документация API скриптов в `docs/script-api.md` и внутри приложения.
+- Выполнение Python-скриптов режима разработчика через Chaquopy.
+- Сценарий GitHub Actions для unit-тестов и сборки debug APK.
+- Ручной чек-лист Telegram-тестирования в `docs/manual-test-checklist.md`.
 
-## Important Limitation
+## Важное ограничение
 
-BotForge is not a VPS and not guaranteed 24/7 hosting. Android can stop background work, restrict networking and save battery. Treat this app as a local mobile runner, test bench and learning platform.
+BotForge не является VPS и не обещает гарантированный 24/7-хостинг. Android может останавливать фоновую работу, ограничивать сеть и экономить батарею. Используйте приложение как локальный мобильный раннер, тестовую среду и учебную платформу.
 
-## Python Engine
+## Python-движок
 
-`PythonBotEngine` executes saved scripts through Chaquopy. Android still owns Telegram tokens, polling, offsets and message sending. Python receives only a safe message context.
+`PythonBotEngine` выполняет сохранённые скрипты через Chaquopy. Android по-прежнему отвечает за Telegram-токены, опрос, offset и отправку сообщений. Python получает только безопасный контекст сообщения.
 
-The embedded runtime is implemented in `app/src/main/python/botforge_runtime.py`.
+Встроенный runtime находится в `app/src/main/python/botforge_runtime.py`.
 
-## Debug First
+## Что дебажить первым
 
-1. Token validation in `AddBotActivity`.
-2. Secure token storage in `SecureTokenStorage`.
-3. Telegram HTTP errors in `TelegramApiClient`.
-4. Polling loop and offset updates in `BotRunner`.
-5. Local persistence in `BotRepository`, `ScriptRepository`, `LogRepository`.
-6. Developer Mode bridge in `PythonBotEngine` and `botforge_runtime.py`.
-7. GitHub Actions build logs after each push.
+1. Проверку токена в `AddBotActivity`.
+2. Защищённое хранилище токенов в `SecureTokenStorage`.
+3. Ошибки Telegram HTTP в `TelegramApiClient`.
+4. Цикл опроса и обновление offset в `BotRunner`.
+5. Локальное хранение в `BotRepository`, `ScriptRepository`, `LogRepository`.
+6. Связку режима разработчика в `PythonBotEngine` и `botforge_runtime.py`.
+7. Логи сборки GitHub Actions после каждого push.

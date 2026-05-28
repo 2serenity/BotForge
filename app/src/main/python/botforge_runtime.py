@@ -86,7 +86,7 @@ class StorageProxy:
 
     def add(self, collection, item):
         if not isinstance(item, dict):
-            raise TypeError("ctx.storage.add expects a dict item")
+            raise TypeError("ctx.storage.add ожидает dict-объект")
         self._bridge.storageAdd(collection, json.dumps(item, ensure_ascii=False))
 
     def clear(self, collection):
@@ -203,7 +203,7 @@ def _normalize_buttons(buttons):
     if buttons is None:
         return None
     if not isinstance(buttons, list):
-        raise TypeError("buttons must be a list of rows")
+        raise TypeError("buttons должен быть списком строк кнопок")
 
     normalized = []
     for row in buttons:

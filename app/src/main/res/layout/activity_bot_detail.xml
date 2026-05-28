@@ -83,7 +83,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_button_secondary"
-            android:text="Сбросить offset"
+            android:text="Сбросить ID обновления"
             android:textAllCaps="false"
             android:textColor="@color/bf_text" />
 

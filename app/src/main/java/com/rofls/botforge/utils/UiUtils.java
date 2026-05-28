@@ -19,7 +19,7 @@ public final class UiUtils {
         new AlertDialog.Builder(context)
                 .setTitle("Ошибка")
                 .setMessage(message)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("ОК", null)
                 .show();
     }
 
@@ -27,7 +27,7 @@ public final class UiUtils {
         new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("ОК", null)
                 .show();
     }
 

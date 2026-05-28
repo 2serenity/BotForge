@@ -48,7 +48,7 @@ public class PythonBotEngine implements BotEngine {
             JSONObject result = new JSONObject(rawResult);
 
             if (result.has("error")) {
-                String error = result.optString("error", "Unknown Python error");
+                String error = result.optString("error", "Неизвестная ошибка Python");
                 logRepository.error(bot, "Ошибка Python-скрипта", error);
                 return new BotResponse("Ошибка Python-скрипта. Откройте логи BotForge.");
             }
@@ -57,8 +57,8 @@ public class PythonBotEngine implements BotEngine {
             JSONArray buttons = result.optJSONArray("buttons");
             return new BotResponse(text, buttons);
         } catch (Exception ex) {
-            logRepository.error(bot, "Python engine error", ex.getMessage());
-            return new BotResponse("Python engine error. Откройте логи BotForge.");
+            logRepository.error(bot, "Ошибка Python-движка", ex.getMessage());
+            return new BotResponse("Ошибка Python-движка. Откройте логи BotForge.");
         }
     }
 

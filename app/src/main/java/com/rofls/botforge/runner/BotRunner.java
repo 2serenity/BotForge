@@ -70,7 +70,7 @@ public class BotRunner implements Runnable {
         botRepository.markStarted(bot.getId());
         bot.setStatus(BotStatus.RUNNING);
         bot.setLastStartedAt(System.currentTimeMillis());
-        logRepository.info(bot, "Polling запущен");
+        logRepository.info(bot, "Опрос запущен");
 
         long offset = bot.getLastUpdateId() > 0L ? bot.getLastUpdateId() + 1L : 0L;
         int transientFailures = 0;
@@ -79,7 +79,7 @@ public class BotRunner implements Runnable {
             try {
                 List<TelegramUpdate> updates = apiClient.getUpdates(bot.getToken(), offset);
                 if (transientFailures > 0) {
-                    logRepository.info(bot, "Polling восстановлен после сетевой ошибки");
+                    logRepository.info(bot, "Опрос восстановлен после сетевой ошибки");
                     transientFailures = 0;
                 }
                 for (TelegramUpdate update : updates) {
@@ -115,7 +115,7 @@ public class BotRunner implements Runnable {
                     failed = true;
                     running.set(false);
                     botRepository.updateStatus(bot.getId(), BotStatus.ERROR);
-                    logRepository.error(bot, "Polling остановлен из-за ошибки Telegram API", ex.getMessage());
+                    logRepository.error(bot, "Опрос остановлен из-за ошибки Telegram API", ex.getMessage());
                 }
             } catch (Exception ex) {
                 if (running.get()) {
@@ -124,11 +124,11 @@ public class BotRunner implements Runnable {
                         failed = true;
                         running.set(false);
                         botRepository.updateStatus(bot.getId(), BotStatus.ERROR);
-                        logRepository.error(bot, "Polling остановлен после повторных сетевых ошибок", ex.getMessage());
+                        logRepository.error(bot, "Опрос остановлен после повторных сетевых ошибок", ex.getMessage());
                     } else {
                         long delay = retryDelayMs(transientFailures);
                         logRepository.warn(bot,
-                                "Временная ошибка polling, повтор через " + (delay / 1000L) + " сек.",
+                                "Временная ошибка опроса, повтор через " + (delay / 1000L) + " сек.",
                                 ex.getMessage());
                         sleepBeforeRetry(delay);
                     }
@@ -138,7 +138,7 @@ public class BotRunner implements Runnable {
 
         if (!failed) {
             botRepository.updateStatus(bot.getId(), BotStatus.STOPPED);
-            logRepository.info(bot, "Polling остановлен");
+            logRepository.info(bot, "Опрос остановлен");
         }
         running.set(false);
     }

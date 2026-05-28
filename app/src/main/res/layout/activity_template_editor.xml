@@ -34,7 +34,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="6dp"
             android:background="@drawable/bg_edit_text"
-            android:hint="Например: My Shop Bot"
+            android:hint="Например: Бот моего магазина"
             android:singleLine="true"
             android:textColor="@color/bf_text"
             android:textColorHint="@color/bf_text_secondary" />

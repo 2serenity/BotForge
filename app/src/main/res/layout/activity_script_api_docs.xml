@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Script API"
+            android:text="API скриптов"
             android:textColor="@color/bf_text"
             android:textSize="28sp"
             android:textStyle="bold" />

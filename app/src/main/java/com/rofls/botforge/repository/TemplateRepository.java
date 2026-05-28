@@ -44,35 +44,35 @@ public class TemplateRepository {
         List<BotTemplate> templates = new ArrayList<>();
         templates.add(new BotTemplate(
                 TEMPLATE_ECHO,
-                "Echo Bot",
+                "Эхо-бот",
                 "Повторяет любое входящее сообщение.",
                 "Лёгкий",
                 echoScript()
         ));
         templates.add(new BotTemplate(
                 TEMPLATE_COMMAND,
-                "Command Bot",
+                "Командный бот",
                 "Отвечает на /start и /help.",
                 "Лёгкий",
                 commandScript()
         ));
         templates.add(new BotTemplate(
                 TEMPLATE_MENU,
-                "Menu Bot",
+                "Меню-бот",
                 "Показывает простое меню с кнопками.",
                 "Средний",
                 menuScript()
         ));
         templates.add(new BotTemplate(
                 TEMPLATE_FAQ,
-                "FAQ Bot",
+                "FAQ-бот",
                 "Ищет ответы по ключевым словам.",
                 "Средний",
                 faqScript()
         ));
         templates.add(new BotTemplate(
                 TEMPLATE_BUY_SELL,
-                "Buy/Sell Bot",
+                "Бот купли-продажи",
                 "Заготовка для доски объявлений.",
                 "Сложный",
                 buySellScript()
@@ -123,7 +123,7 @@ public class TemplateRepository {
 
     public BotTemplate saveCustomTemplate(BotTemplate template) {
         if (prefs == null) {
-            throw new IllegalStateException("Custom templates require a Context-backed TemplateRepository");
+            throw new IllegalStateException("Пользовательским шаблонам нужен TemplateRepository с Android Context.");
         }
 
         long now = System.currentTimeMillis();
@@ -173,7 +173,7 @@ public class TemplateRepository {
             try {
                 array.put(template.toJson());
             } catch (JSONException ignored) {
-                // Skip broken user template records.
+                // Пропускаем повреждённые записи пользовательских шаблонов.
             }
         }
         prefs.edit().putString(KEY_TEMPLATES, array.toString()).apply();

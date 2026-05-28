@@ -1,109 +1,109 @@
-# BotForge Manual Test Checklist
+# Чек-лист ручного тестирования BotForge
 
-Use this checklist on a real device or emulator with a test Telegram bot token from BotFather.
+Используйте этот чек-лист на реальном устройстве или эмуляторе с тестовым Telegram-токеном из BotFather.
 
-## Install and Launch
+## Установка и запуск
 
-- Build and install debug APK.
-- Open BotForge.
-- Confirm Splash screen opens.
-- Open bots list.
-- Confirm empty state is shown when no bots exist.
+- Соберите и установите debug APK.
+- Откройте BotForge.
+- Проверьте, что открывается Splash-экран.
+- Откройте список ботов.
+- Проверьте пустое состояние, если ботов ещё нет.
 
-## Token Validation
+## Проверка токена
 
-- Try saving a bot with an empty token.
-- Try `Проверить токен` with an invalid token.
-- Try `Проверить токен` with a valid token.
-- Confirm `getMe` shows the bot username.
-- Confirm an invalid token cannot be saved.
+- Попробуйте сохранить бота с пустым токеном.
+- Нажмите `Проверить токен` с невалидным токеном.
+- Нажмите `Проверить токен` с валидным токеном.
+- Проверьте, что `getMe` показывает username бота.
+- Проверьте, что бота с невалидным токеном нельзя сохранить.
 
-## Bot CRUD
+## Создание, просмотр и удаление бота
 
-- Save a TEMPLATE bot.
-- Confirm it appears in the bots list.
-- Open bot detail screen.
-- Confirm username, mode, template and `lastUpdateId` are shown.
-- Delete a bot and confirm it disappears.
+- Сохраните бота в режиме шаблона.
+- Проверьте, что он появился в списке ботов.
+- Откройте карточку бота.
+- Проверьте, что отображаются username, режим, шаблон и `lastUpdateId`.
+- Удалите бота и проверьте, что он исчез из списка.
 
-## Template Bots
+## Шаблонные боты
 
-- Echo Bot: send any text and expect the same text back.
-- Command Bot: send `/start`, `/help`, and an unknown command.
-- Menu Bot: send `/start`, tap `Каталог`, tap `Назад`.
-- FAQ Bot: send messages containing `цена`, `время`, `контакты`, and unknown text.
-- Buy/Sell Bot: add an item through `Продать`, then view it through `Купить`.
+- Эхо-бот: отправьте любой текст и ожидайте такой же текст в ответ.
+- Командный бот: отправьте `/start`, `/help` и неизвестную команду.
+- Меню-бот: отправьте `/start`, нажмите `Каталог`, затем `Назад`.
+- FAQ-бот: отправьте сообщения со словами `цена`, `время`, `контакты` и неизвестный текст.
+- Бот купли-продажи: добавьте объявление через `Продать`, затем откройте его через `Купить`.
 
-## Custom Templates
+## Пользовательские шаблоны
 
-- Create a DEVELOPER bot.
-- Write and save a working script.
-- Press `Сохранить как шаблон`.
-- Fill template name, description and difficulty.
-- Save the custom template.
-- Open template catalog.
-- Confirm the custom template is marked as `мой`.
-- Edit the custom template and save changes.
-- Use the custom template to create a new bot.
-- Confirm the new bot receives a copied script and runs through Python engine.
-- Delete the custom template.
-- Confirm already-created bots from this template still keep their script copy.
+- Создайте бота в режиме разработчика.
+- Напишите и сохраните рабочий скрипт.
+- Нажмите `Сохранить как шаблон`.
+- Заполните название, описание и сложность шаблона.
+- Сохраните пользовательский шаблон.
+- Откройте каталог шаблонов.
+- Проверьте, что пользовательский шаблон помечен как `мой`.
+- Отредактируйте пользовательский шаблон и сохраните изменения.
+- Используйте пользовательский шаблон для создания нового бота.
+- Проверьте, что новый бот получил копию скрипта и запускается через Python-движок.
+- Удалите пользовательский шаблон.
+- Проверьте, что уже созданные из него боты сохранили свои копии скрипта.
 
-## Developer Mode
+## Режим разработчика
 
-- Create a DEVELOPER bot.
-- Open script editor.
-- Try checking an empty script.
-- Save a valid script.
-- Leave the editor with unsaved changes and confirm the warning appears.
-- Run this script:
+- Создайте бота в режиме разработчика.
+- Откройте редактор скрипта.
+- Попробуйте проверить пустой скрипт.
+- Сохраните валидный скрипт.
+- Выйдите из редактора с несохранёнными изменениями и проверьте предупреждение.
+- Запустите такой скрипт:
 
 ```python
 from botforge import bot
 
 @bot.command("/start")
 def start(ctx):
-    ctx.reply("Developer mode works", buttons=[
-        ["Echo"]
+    ctx.reply("Режим разработчика работает", buttons=[
+        ["Эхо"]
     ])
 
-@bot.button("Echo")
+@bot.button("Эхо")
 def echo_button(ctx):
-    ctx.reply("Send any text")
+    ctx.reply("Отправьте любой текст")
 
 @bot.message()
 def echo(ctx):
-    ctx.reply("You said: " + ctx.text)
+    ctx.reply("Вы написали: " + ctx.text)
 ```
 
-- Send `/start` in Telegram.
-- Tap `Echo`.
-- Send any text and confirm the reply.
+- Отправьте `/start` в Telegram.
+- Нажмите `Эхо`.
+- Отправьте любой текст и проверьте ответ.
 
-## State, Session and Storage
+## Состояние, сессия и хранилище
 
-Run this script:
+Запустите такой скрипт:
 
 ```python
 from botforge import bot
 
 @bot.command("/start")
 def start(ctx):
-    ctx.reply("Menu", buttons=[
-        ["Add"],
-        ["List"]
+    ctx.reply("Меню", buttons=[
+        ["Добавить"],
+        ["Список"]
     ])
 
-@bot.button("Add")
+@bot.button("Добавить")
 def add(ctx):
     ctx.set_state("add_title")
-    ctx.reply("Send title")
+    ctx.reply("Напишите название")
 
 @bot.state("add_title")
 def add_title(ctx):
     ctx.session["title"] = ctx.text
     ctx.set_state("add_price")
-    ctx.reply("Send price")
+    ctx.reply("Напишите цену")
 
 @bot.state("add_price")
 def add_price(ctx):
@@ -113,60 +113,60 @@ def add_price(ctx):
         "seller_id": ctx.user_id
     })
     ctx.clear_state()
-    ctx.reply("Saved", buttons=[
-        ["List"]
+    ctx.reply("Сохранено", buttons=[
+        ["Список"]
     ])
 
-@bot.button("List")
+@bot.button("Список")
 def list_items(ctx):
     items = ctx.storage.all("items")
     if not items:
-        ctx.reply("Empty")
+        ctx.reply("Пусто")
         return
 
-    text = "Items:\n"
+    text = "Товары:\n"
     for item in items:
         text += item["title"] + " - " + item["price"] + "\n"
     ctx.reply(text)
 ```
 
-- Add an item.
-- List items.
-- Restart polling.
-- Confirm stored item still exists.
+- Добавьте товар.
+- Откройте список товаров.
+- Перезапустите опрос.
+- Проверьте, что сохранённый товар остался в хранилище.
 
-## Polling and Offset
+## Опрос Telegram и offset
 
-- Start polling.
-- Confirm status becomes `RUNNING`.
-- Send a Telegram message.
-- Confirm `lastUpdateId` changes.
-- Stop polling.
-- Confirm status becomes `STOPPED`.
-- Reset offset while stopped.
-- Start polling again and confirm old pending updates may be processed.
-- Confirm reset offset is blocked while polling is running.
+- Запустите опрос.
+- Проверьте, что статус стал `Запущен`.
+- Отправьте сообщение в Telegram.
+- Проверьте, что `lastUpdateId` изменился.
+- Остановите опрос.
+- Проверьте, что статус стал `Остановлен`.
+- Сбросьте offset, пока бот остановлен.
+- Запустите опрос снова и проверьте, что старые ожидающие обновления могут быть обработаны.
+- Проверьте, что сброс offset заблокирован, пока опрос запущен.
 
-## Logs
+## Журнал
 
-- Open global logs.
-- Open bot-specific logs.
-- Confirm logs auto-refresh while polling is active.
-- Press `Обновить`.
-- Clear bot logs.
-- Clear global logs.
+- Откройте общий журнал.
+- Откройте журнал конкретного бота.
+- Проверьте, что журнал автообновляется, пока опрос активен.
+- Нажмите `Обновить`.
+- Очистите журнал бота.
+- Очистите общий журнал.
 
-## Resilience
+## Устойчивость
 
-- Start polling, then disable network temporarily.
-- Confirm logs show retry/backoff warnings instead of immediate fatal stop.
-- Restore network.
-- Confirm polling recovers.
-- Send a script response longer than 4096 characters.
-- Confirm BotForge sends it as multiple Telegram messages.
+- Запустите опрос, затем временно отключите сеть.
+- Проверьте, что журнал показывает предупреждения о повторе и задержке, а не мгновенную фатальную остановку.
+- Включите сеть обратно.
+- Проверьте, что опрос восстановился.
+- Отправьте из скрипта ответ длиннее 4096 символов.
+- Проверьте, что BotForge отправил его несколькими Telegram-сообщениями.
 
-## Security
+## Безопасность
 
-- Confirm bot token is not present in the bot metadata JSON in regular preferences.
-- Confirm encrypted token preferences are excluded from backup rules.
-- Confirm Python scripts cannot access the Telegram token through `ctx`.
+- Проверьте, что токен бота отсутствует в JSON метаданных обычных preferences.
+- Проверьте, что зашифрованные preferences с токенами исключены из правил резервного копирования.
+- Проверьте, что Python-скрипты не получают Telegram-токен через `ctx`.

@@ -25,7 +25,7 @@
             android:background="@drawable/bg_card"
             android:lineSpacingExtra="5dp"
             android:padding="14dp"
-            android:text="BotForge хранит метаданные и скрипты локально в SharedPreferences, а Telegram-токены — отдельно в EncryptedSharedPreferences через Android Keystore. Зашифрованные токены исключены из Auto Backup и переноса между устройствами.\n\nПриложение не обещает 24/7-хостинг: Android может ограничивать сеть, фоновые потоки и батарею. Используйте BotForge как локальный раннер, учебную среду и инструмент тестирования."
+            android:text="BotForge хранит метаданные и скрипты локально в SharedPreferences, а Telegram-токены — отдельно в EncryptedSharedPreferences через Android Keystore. Зашифрованные токены исключены из автобэкапа Android и переноса между устройствами.\n\nПриложение не обещает 24/7-хостинг: Android может ограничивать сеть, фоновые потоки и батарею. Используйте BotForge как локальный раннер, учебную среду и инструмент тестирования."
             android:textColor="@color/bf_text_secondary"
             android:textSize="15sp" />
 
@@ -35,7 +35,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="14dp"
             android:background="@drawable/bg_button_secondary"
-            android:text="Документация Script API"
+            android:text="Документация API скриптов"
             android:textAllCaps="false"
             android:textColor="@color/bf_text" />
 

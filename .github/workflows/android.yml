@@ -1,4 +1,4 @@
-name: Android
+name: Android-сборка
 
 on:
   push:
@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Получить код
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Настроить JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Python for Chaquopy
+      - name: Настроить Python для Chaquopy
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Make Gradle executable
+      - name: Разрешить запуск Gradle
         run: chmod +x gradlew
 
-      - name: Run unit tests
+      - name: Запустить unit-тесты
         run: ./gradlew testDebugUnitTest
 
-      - name: Build debug APK
+      - name: Собрать debug APK
         run: ./gradlew assembleDebug

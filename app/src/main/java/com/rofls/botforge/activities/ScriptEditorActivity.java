@@ -149,7 +149,7 @@ public class ScriptEditorActivity extends Activity {
         }
         if (bot.getMode() == BotMode.DEVELOPER && bot.getLastStartedAt() == 0L) {
             new AlertDialog.Builder(this)
-                    .setTitle("Developer Mode")
+                    .setTitle("Режим разработчика")
                     .setMessage("Вы запускаете пользовательский Python-код локально на своём устройстве. Код может содержать ошибки, зависать, потреблять ресурсы устройства и нарушать работу бота. Вы несёте ответственность за скрипт, который запускаете.")
                     .setPositiveButton("Запустить", (dialog, which) -> runStart())
                     .setNegativeButton("Отмена", null)
@@ -162,7 +162,7 @@ public class ScriptEditorActivity extends Activity {
     private void runStart() {
         try {
             runnerManager.startBot(bot);
-            UiUtils.toast(this, "Polling запущен");
+            UiUtils.toast(this, "Опрос запущен");
             bot = botRepository.getBot(botId);
         } catch (IllegalStateException ex) {
             UiUtils.showError(this, ex.getMessage());
@@ -174,7 +174,7 @@ public class ScriptEditorActivity extends Activity {
             return;
         }
         runnerManager.stopBot(bot.getId());
-        UiUtils.toast(this, "Polling остановлен");
+        UiUtils.toast(this, "Опрос остановлен");
     }
 
     private void openLogs() {
@@ -200,7 +200,7 @@ public class ScriptEditorActivity extends Activity {
         }
 
         Intent intent = new Intent(this, TemplateEditorActivity.class);
-        intent.putExtra("source_name", bot.getName() + " Template");
+        intent.putExtra("source_name", bot.getName() + " шаблон");
         intent.putExtra("source_description", "Пользовательский шаблон из скрипта " + bot.getName());
         intent.putExtra("source_script", script);
         startActivity(intent);

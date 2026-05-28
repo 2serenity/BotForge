@@ -33,7 +33,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="6dp"
             android:background="@drawable/bg_edit_text"
-            android:hint="Например: Test Echo Bot"
+            android:hint="Например: Тестовый эхо-бот"
             android:singleLine="true"
             android:textColor="@color/bf_text"
             android:textColorHint="@color/bf_text_secondary" />
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:text="Telegram bot token"
+            android:text="Токен Telegram-бота"
             android:textColor="@color/bf_text_secondary"
             android:textSize="14sp" />
 
@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/bf_accent"
                 android:checked="true"
-                android:text="TEMPLATE"
+                android:text="Шаблон"
                 android:textColor="@color/bf_text" />
 
             <RadioButton
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:buttonTint="@color/bf_accent"
-                android:text="DEVELOPER"
+                android:text="Разработчик"
                 android:textColor="@color/bf_text" />
         </RadioGroup>
 
