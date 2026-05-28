@@ -1,8 +1,8 @@
 # BotForge Script API
 
-Status: draft API for Developer Mode.
+Status: first executable API for Developer Mode.
 
-In the current Android build, Python scripts are saved but not executed yet. `PythonBotEngine` is still a stub. This document describes the intended API contract that the Chaquopy bridge should implement later.
+Python scripts are executed locally through Chaquopy. The API is intentionally small and can be expanded after the runner is stable.
 
 Important rule: Python code must never receive the Telegram bot token. Android owns token storage, polling, offset handling and calls to Telegram Bot API.
 
@@ -161,13 +161,13 @@ BotForge is a local mobile runner, not a VPS.
 - Long-running Python handlers should be avoided.
 - Scripts should not block the polling thread.
 
-## Current Implementation Gap
+## Current Implementation
 
 Current Android code:
 
 - saves scripts in `ScriptRepository`;
 - validates scripts with a basic text check;
-- uses `PythonBotEngine` as a stub;
-- returns a fixed response instead of executing Python.
+- executes scripts through `PythonBotEngine` and Chaquopy;
+- exposes `ctx`, decorators, reply buttons, state, session and simple storage.
 
-Next implementation step: replace only `PythonBotEngine` with a Chaquopy bridge while keeping `BotRunner` and `TelegramApiClient` in Java.
+Telegram polling, offset handling, token storage and `sendMessage` remain in Java.

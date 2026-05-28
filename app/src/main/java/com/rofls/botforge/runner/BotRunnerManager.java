@@ -49,7 +49,7 @@ public class BotRunnerManager {
         }
 
         BotEngine engine = bot.getMode() == BotMode.DEVELOPER
-                ? new PythonBotEngine(scriptRepository)
+                ? new PythonBotEngine(appContext, scriptRepository, logRepository)
                 : new TemplateBotEngine(appContext);
 
         activeRunner = new BotRunner(bot, apiClient, engine, botRepository, logRepository);

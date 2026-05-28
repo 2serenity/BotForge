@@ -37,33 +37,17 @@ The repository includes a Gradle wrapper, so a local debug build can be started 
 - Template engines for Echo, Command, Menu, FAQ and Buy/Sell.
 - Developer Mode script editor with basic validation.
 - Script API documentation in `docs/script-api.md` and inside the app.
+- Developer Mode Python execution through Chaquopy.
 
 ## Important Limitation
 
 BotForge is not a VPS and not guaranteed 24/7 hosting. Android can stop background work, restrict networking and save battery. Treat this app as a local mobile runner, test bench and learning platform.
 
-## Stub
+## Python Engine
 
-`PythonBotEngine` is currently a replaceable stub. It reads the saved script and returns:
+`PythonBotEngine` executes saved scripts through Chaquopy. Android still owns Telegram tokens, polling, offsets and message sending. Python receives only a safe message context.
 
-`Python engine пока в режиме заглушки. Скрипт сохранён.`
-
-The Java side intentionally owns Telegram tokens, polling, offsets and message sending. Python must not receive the bot token.
-
-## How to Connect Chaquopy Later
-
-1. Add Chaquopy plugin repositories and plugin version to Gradle.
-2. Apply the Chaquopy plugin in `app/build.gradle`.
-3. Add Python source files under `app/src/main/python`.
-4. Implement a bridge where Java passes a safe context object to Python:
-   - text
-   - chat id
-   - user id
-   - current state/session handles
-5. Return a Java-friendly response object:
-   - text
-   - optional buttons JSON
-6. Replace only `engine/PythonBotEngine.java`; keep `BotRunner` and `TelegramApiClient` unchanged.
+The embedded runtime is implemented in `app/src/main/python/botforge_runtime.py`.
 
 ## Debug First
 
@@ -72,4 +56,4 @@ The Java side intentionally owns Telegram tokens, polling, offsets and message s
 3. Telegram HTTP errors in `TelegramApiClient`.
 4. Polling loop and offset updates in `BotRunner`.
 5. Local persistence in `BotRepository`, `ScriptRepository`, `LogRepository`.
-6. Developer Mode bridge in `PythonBotEngine`.
+6. Developer Mode bridge in `PythonBotEngine` and `botforge_runtime.py`.

@@ -17,10 +17,9 @@ public class ScriptApiDocsActivity extends Activity {
     }
 
     private String buildDocs() {
-        return "Status: draft API for Developer Mode.\n\n"
-                + "В текущей сборке Python-скрипты сохраняются, но ещё не исполняются. "
-                + "PythonBotEngine пока работает как заглушка. Этот экран описывает контракт API, "
-                + "который будет реализован через Chaquopy bridge.\n\n"
+        return "Status: first executable API for Developer Mode.\n\n"
+                + "Python-скрипты выполняются локально через Chaquopy. API намеренно небольшой, "
+                + "чтобы сначала стабилизировать runner и bridge.\n\n"
                 + "Главное правило: Python-код не получает Telegram token. Android отвечает за token, polling, offset и Telegram Bot API.\n\n"
                 + "Минимальный бот:\n\n"
                 + "from botforge import bot\n\n"

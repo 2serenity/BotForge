@@ -33,13 +33,19 @@ public class StateManager {
         return JsonUtils.safeObject(prefs.getString(sessionKey(botId, chatId), "{}"));
     }
 
+    public void setSession(String botId, long chatId, JSONObject session) {
+        prefs.edit()
+                .putString(sessionKey(botId, chatId), session == null ? "{}" : session.toString())
+                .apply();
+    }
+
     public void setSessionValue(String botId, long chatId, String key, String value) {
         JSONObject session = getSession(botId, chatId);
         try {
             session.put(key, value);
         } catch (JSONException ignored) {
         }
-        prefs.edit().putString(sessionKey(botId, chatId), session.toString()).apply();
+        setSession(botId, chatId, session);
     }
 
     public String getSessionValue(String botId, long chatId, String key) {
