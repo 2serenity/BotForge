@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  contents: write   # необходимо для создания/обновления Release (используется только при push)
+  contents: write 
 
 jobs:
   build:
