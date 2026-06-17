@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write   # необходимо для создания/обновления Release (используется только при push)
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,3 +38,16 @@ jobs:
 
       - name: Собрать debug APK
         run: ./gradlew assembleDebug
+
+      - name: Опубликовать debug APK в Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: "Debug-сборка (актуальная)"
+          body: "Автоматически собранный debug APK из ветки main (коммит ${{ github.sha }})."
+          draft: false
+          prerelease: true
+          make_latest: true
+          files: app/build/outputs/apk/debug/*.apk
+          overwrite: true
