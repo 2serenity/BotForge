@@ -1,12 +1,14 @@
 # BotForge
 
-BotForge — первая рабочая Android-сборка локального раннера Telegram-ботов.
+BotForge — Android-сборка локального раннера Telegram-ботов.
 
 Пакет: `com.rofls.botforge`
 
 Основной язык: Java
 
 Интерфейс: XML-разметка, без Jetpack Compose
+
+[figma](https://www.figma.com/design/kOnUAtMgpRMulKlXQDvzU6/BotForge?node-id=4-2&t=LtS4WYcyqA5ybVqF-1)
 
 ## Как открыть
 
@@ -19,15 +21,12 @@ BotForge — первая рабочая Android-сборка локальног
 
 ## Что уже работает
 
-- Тёмный интерфейс в стиле Telegram.
 - Добавление бота по названию и токену.
 - Проверка токена через реальный Telegram Bot API `getMe`.
 - Локальное хранение метаданных ботов в `SharedPreferences`.
 - Хранение Telegram-токенов в `EncryptedSharedPreferences`.
 - Исключение зашифрованного хранилища токенов из автобэкапа Android и переноса между устройствами.
 - Локальное хранение скриптов в `SharedPreferences`.
-- Список добавленных ботов.
-- Карточка конкретного бота.
 - Запуск и остановка фонового опроса Telegram через long polling.
 - Получение обновлений через реальный `getUpdates`.
 - Отправка ответов через реальный `sendMessage`.
@@ -49,20 +48,10 @@ BotForge — первая рабочая Android-сборка локальног
 
 ## Важное ограничение
 
-BotForge не является VPS и не обещает гарантированный 24/7-хостинг. Android может останавливать фоновую работу, ограничивать сеть и экономить батарею. Используйте приложение как локальный мобильный раннер, тестовую среду и учебную платформу.
+BotForge не является VPS и не обещает 24/7-хостинг. Android может останавливать фоновую работу, ограничивать сеть и экономить батарею. Приложение - локальный мобильный раннер и тестовая среда.
 
 ## Python-движок
 
 `PythonBotEngine` выполняет сохранённые скрипты через Chaquopy. Android по-прежнему отвечает за Telegram-токены, опрос, offset и отправку сообщений. Python получает только безопасный контекст сообщения.
 
 Встроенный runtime находится в `app/src/main/python/botforge_runtime.py`.
-
-## Что дебажить первым
-
-1. Проверку токена в `AddBotActivity`.
-2. Защищённое хранилище токенов в `SecureTokenStorage`.
-3. Ошибки Telegram HTTP в `TelegramApiClient`.
-4. Цикл опроса и обновление offset в `BotRunner`.
-5. Локальное хранение в `BotRepository`, `ScriptRepository`, `LogRepository`.
-6. Связку режима разработчика в `PythonBotEngine` и `botforge_runtime.py`.
-7. Логи сборки GitHub Actions после каждого push.
